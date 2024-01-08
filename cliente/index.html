@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>Notificaciones</h2>
+    <ul id="notificaciones">
+
+    </ul>
+
+    <script>
+
+        const listaNotificaciones = document.getElementById("notificaciones");
+
+        function pintarNotificacion(notificacion) {
+            const li = document.createElement("li");
+            li.innerText = `${notificacion.id} - ${notificacion.cuerpo}`;
+
+            listaNotificaciones.appendChild(li);
+        }
+
+        function pintarNotificaciones(notificaciones) {
+            for (notificacion of notificaciones) {
+                pintarNotificacion(notificacion);
+            }
+        }
+
+        async function obtenerNotificaciones() {
+            try {
+                const res = await fetch('http://localhost:3000/notificaciones')
+                const data = await res.json();
+                const notificaciones = data.notificaciones;
+
+                if (notificaciones.length > 0) {
+                    ultimoIdNoti = notificaciones[notificaciones.length - 1].id;
+                    pintarNotificaciones(notificaciones);
+                }
+            } catch (error) {
+                console.log(err0r);
+            }
+        };
+
+        async function obtenerNotificacionesNuevas() {
+            try {
+                const res = await fetch('http://localhost:3000/notificacion-nueva');
+                const data = await res.json();
+
+                const notificacion = data.notificacion;
+
+                pintarNotificacion(notificacion);
+            } catch (error) {
+                console.log(error)
+            } finally {
+                obtenerNotificacionesNuevas();
+            }
+        }
+
+        // IIFE
+        (async () => {
+            await obtenerNotificaciones();
+            obtenerNotificacionesNuevas();
+        })();
+
+
+    </script>
+</body>
+
+</html>
